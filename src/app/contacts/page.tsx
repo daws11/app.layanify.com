@@ -127,28 +127,28 @@ export default function ContactsPage() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Contacts</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Contacts</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               Manage your WhatsApp contacts and customer information.
             </p>
           </div>
-          <Button onClick={() => handleOpenDialog()}>
+          <Button onClick={() => handleOpenDialog()} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Add Contact
           </Button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Contacts</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{contacts.length}</div>
+              <div className="text-xl sm:text-2xl font-bold">{contacts.length}</div>
             </CardContent>
           </Card>
           
@@ -158,7 +158,7 @@ export default function ContactsPage() {
               <Users className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-xl sm:text-2xl font-bold">
                 {contacts.filter(c => c.status === 'active').length}
               </div>
             </CardContent>
@@ -170,7 +170,7 @@ export default function ContactsPage() {
               <Users className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-xl sm:text-2xl font-bold">
                 {contacts.filter(c => c.status === 'opted-out').length}
               </div>
             </CardContent>
@@ -182,7 +182,7 @@ export default function ContactsPage() {
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-xl sm:text-2xl font-bold">
                 {contacts.filter(c => {
                   const thisMonth = new Date();
                   return c.lastContact.getMonth() === thisMonth.getMonth();
@@ -212,7 +212,7 @@ export default function ContactsPage() {
                 />
               </div>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <Filter className="mr-2 h-4 w-4" />
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
@@ -244,19 +244,19 @@ export default function ContactsPage() {
                 {filteredContacts.map((contact) => (
                   <div
                     key={contact.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors gap-4"
                   >
-                    <div className="flex items-center space-x-4">
-                      <Avatar>
+                    <div className="flex items-center space-x-4 min-w-0 flex-1">
+                      <Avatar className="flex-shrink-0">
                         <AvatarImage src="" />
                         <AvatarFallback>
                           {contact.name?.charAt(0)?.toUpperCase() || contact.phone.slice(-2)}
                         </AvatarFallback>
                       </Avatar>
                       
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <h4 className="font-medium">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                          <h4 className="font-medium truncate">
                             {contact.name || 'Unnamed Contact'}
                           </h4>
                           <Badge className={getStatusColor(contact.status)} variant="secondary">
@@ -264,37 +264,39 @@ export default function ContactsPage() {
                           </Badge>
                         </div>
                         
-                        <div className="flex items-center space-x-4 mt-1 text-sm text-muted-foreground">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-1 text-sm text-muted-foreground">
                           <span className="flex items-center">
-                            <Phone className="mr-1 h-3 w-3" />
-                            {contact.phone}
+                            <Phone className="mr-1 h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">{contact.phone}</span>
                           </span>
                           {contact.email && (
                             <span className="flex items-center">
-                              <Mail className="mr-1 h-3 w-3" />
-                              {contact.email}
+                              <Mail className="mr-1 h-3 w-3 flex-shrink-0" />
+                              <span className="truncate">{contact.email}</span>
                             </span>
                           )}
                           <span className="flex items-center">
-                            <Calendar className="mr-1 h-3 w-3" />
+                            <Calendar className="mr-1 h-3 w-3 flex-shrink-0" />
                             {contact.lastContact.toLocaleDateString()}
                           </span>
                         </div>
                         
                         {contact.tags.length > 0 && (
                           <div className="flex items-center space-x-1 mt-2">
-                            <Tag className="h-3 w-3 text-muted-foreground" />
-                            {contact.tags.map((tag: string) => (
-                              <Badge key={tag} variant="outline" className="text-xs">
-                                {tag}
-                              </Badge>
-                            ))}
+                            <Tag className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                            <div className="flex flex-wrap gap-1">
+                              {contact.tags.map((tag: string) => (
+                                <Badge key={tag} variant="outline" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-end sm:justify-start space-x-2 flex-shrink-0">
                       <Button
                         variant="ghost"
                         size="icon"

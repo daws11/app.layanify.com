@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession, signOut } from 'next-auth/react';
-import { Bell, Search, User, LogOut, Settings } from 'lucide-react';
+import { Bell, Search, User, LogOut, Settings, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -20,7 +20,7 @@ import { Sun, Moon } from 'lucide-react';
 
 export function Header() {
   const { data: session } = useSession();
-  const { notifications, theme, setTheme } = useAppStore();
+  const { notifications, theme, setTheme, setSidebarOpen } = useAppStore();
 
   const unreadNotifications = notifications.filter(n => n.type === 'info').length;
 
@@ -29,10 +29,20 @@ export function Header() {
   };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-background px-6">
+    <header className="flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6">
       <div className="flex items-center gap-4">
-        {/* Search */}
-        <div className="relative w-64">
+        {/* Mobile menu button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="lg:hidden"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <Menu className="h-4 w-4" />
+        </Button>
+        
+        {/* Search - hidden on mobile */}
+        <div className="relative hidden sm:block w-64">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search conversations, contacts..."
@@ -41,7 +51,12 @@ export function Header() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
+        {/* Mobile search button */}
+        <Button variant="ghost" size="icon" className="sm:hidden">
+          <Search className="h-4 w-4" />
+        </Button>
+
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -80,8 +95,8 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Theme Toggle */}
-        <div className="flex items-center gap-2">
+        {/* Theme Toggle - hidden on mobile */}
+        <div className="hidden sm:flex items-center gap-2">
           <Sun className={`h-4 w-4 ${theme === 'light' ? 'text-yellow-500' : 'text-muted-foreground'}`} />
           <Switch
             aria-label="Toggle theme"

@@ -92,21 +92,21 @@ export default function WorkflowsPage() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Workflows</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Workflows</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               Automate your WhatsApp conversations with AI-powered workflows.
             </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="w-full sm:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Workflow
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-md">
               <form onSubmit={handleCreateWorkflow}>
                 <DialogHeader>
                   <DialogTitle>Create New Workflow</DialogTitle>
@@ -115,8 +115,8 @@ export default function WorkflowsPage() {
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="sm:text-right">
                       Name
                     </Label>
                     <Input
@@ -124,12 +124,12 @@ export default function WorkflowsPage() {
                       value={workflowName}
                       onChange={(e) => setWorkflowName(e.target.value)}
                       placeholder="My Awesome Workflow"
-                      className="col-span-3"
+                      className="sm:col-span-3"
                       required
                     />
                   </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="description" className="text-right">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                    <Label htmlFor="description" className="sm:text-right">
                       Description
                     </Label>
                     <Input
@@ -137,7 +137,7 @@ export default function WorkflowsPage() {
                       value={workflowDescription}
                       onChange={(e) => setWorkflowDescription(e.target.value)}
                       placeholder="What does this workflow do?"
-                      className="col-span-3"
+                      className="sm:col-span-3"
                     />
                   </div>
                 </div>
@@ -155,15 +155,15 @@ export default function WorkflowsPage() {
         </div>
 
         {/* Quick Templates */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {workflowTemplates.map((template) => {
             const Icon = template.icon;
             return (
               <Card key={template.name} className="hover:shadow-md transition-shadow cursor-pointer">
                 <CardHeader className="pb-3">
                   <div className="flex items-center space-x-2">
-                    <Icon className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-base">{template.name}</CardTitle>
+                    <Icon className="h-5 w-5 text-primary flex-shrink-0" />
+                    <CardTitle className="text-base truncate">{template.name}</CardTitle>
                   </div>
                   <CardDescription className="text-sm">
                     {template.description}
@@ -214,26 +214,28 @@ export default function WorkflowsPage() {
                 {workflows?.map((workflow) => (
                   <div
                     key={workflow.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors gap-4"
                   >
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
+                    <div className="flex items-center space-x-4 min-w-0 flex-1">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 flex-shrink-0">
                         <Workflow className="h-5 w-5 text-primary" />
                       </div>
-                      <div>
-                        <h4 className="font-medium">{workflow.name}</h4>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <Badge variant="secondary" className="text-xs">
-                            {workflow.nodeCount} nodes
-                          </Badge>
-                          <Badge 
-                            variant={workflow.isActive ? 'default' : 'secondary'}
-                            className="text-xs"
-                          >
-                            {workflow.isActive ? 'Active' : 'Inactive'}
-                          </Badge>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-medium truncate">{workflow.name}</h4>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="secondary" className="text-xs">
+                              {workflow.nodeCount} nodes
+                            </Badge>
+                            <Badge 
+                              variant={workflow.isActive ? 'default' : 'secondary'}
+                              className="text-xs"
+                            >
+                              {workflow.isActive ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </div>
                           {workflow.triggers?.length > 0 && (
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-xs text-muted-foreground truncate">
                               • Triggers: {workflow.triggers.join(', ')}
                             </span>
                           )}
@@ -244,7 +246,7 @@ export default function WorkflowsPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-between sm:justify-end space-x-2 flex-shrink-0">
                       {/* Active/Inactive Toggle */}
                       <div className="flex items-center space-x-2">
                         <Switch
@@ -252,35 +254,37 @@ export default function WorkflowsPage() {
                           onCheckedChange={() => handleToggleWorkflow(workflow.id, workflow.isActive)}
                           disabled={actionLoading}
                         />
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground hidden sm:inline">
                           {workflow.isActive ? 'On' : 'Off'}
                         </span>
                       </div>
 
                       {/* Actions */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => router.push(`/workflows/${workflow.id}/edit`)}
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDuplicateWorkflow()}
-                        disabled={actionLoading}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteWorkflow(workflow.id, workflow.name)}
-                        disabled={actionLoading}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => router.push(`/workflows/${workflow.id}/edit`)}
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDuplicateWorkflow()}
+                          disabled={actionLoading}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteWorkflow(workflow.id, workflow.name)}
+                          disabled={actionLoading}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}

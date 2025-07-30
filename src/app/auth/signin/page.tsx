@@ -67,31 +67,31 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-background py-8 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <div className="mx-auto h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
             <MessageSquare className="h-6 w-6 text-primary-foreground" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-2xl sm:text-3xl font-extrabold text-foreground">
             Sign in to Layanify CRM
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm sm:text-base text-muted-foreground">
             Manage your WhatsApp Business API with AI-powered workflows
           </p>
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Welcome back</CardTitle>
-            <CardDescription>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-lg sm:text-xl">Welcome back</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
               Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <form onSubmit={handleCredentialSignIn} className="space-y-4">
-              <div>
-                <Label htmlFor="email">Email</Label>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -99,10 +99,11 @@ export default function SignInPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="Enter your email"
+                  className="h-10 sm:h-11"
                 />
               </div>
-              <div>
-                <Label htmlFor="password">Password</Label>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -110,11 +111,12 @@ export default function SignInPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="Enter your password"
+                  className="h-10 sm:h-11"
                 />
               </div>
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full h-10 sm:h-11"
                 disabled={isLoading}
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
@@ -135,7 +137,7 @@ export default function SignInPage() {
             <Button
               variant="outline"
               type="button"
-              className="w-full"
+              className="w-full h-10 sm:h-11"
               onClick={handleGoogleSignIn}
               disabled={isLoading}
             >
@@ -161,7 +163,7 @@ export default function SignInPage() {
             </Button>
 
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Don't have an account?{' '}
                 <a
                   href="/auth/signup"

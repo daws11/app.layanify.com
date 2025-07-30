@@ -14,7 +14,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { sidebarOpen } = useAppStore();
+  const { sidebarOpen, setSidebarOpen } = useAppStore();
 
   useEffect(() => {
     if (status === 'loading') return; // Still loading
@@ -37,10 +37,29 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar />
-      <div className={`flex-1 flex flex-col ${sidebarOpen ? 'ml-64' : 'ml-16'} transition-all duration-300`}>
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`
+        fixed left-0 top-0 z-40 h-screen transition-transform duration-300 lg:relative lg:translate-x-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <Sidebar />
+      </div>
+      
+      {/* Main content */}
+      <div className={`
+        flex-1 flex flex-col transition-all duration-300
+        lg:ml-16 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-16'}
+      `}>
         <Header />
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-4 sm:p-6">
           {children}
         </main>
       </div>

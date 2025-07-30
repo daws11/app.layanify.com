@@ -90,10 +90,10 @@ export default function WhatsAppNumbersPage() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">WhatsApp Numbers</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">WhatsApp Numbers</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               Manage your WhatsApp Business numbers and their verification status.
             </p>
           </div>
@@ -105,12 +105,13 @@ export default function WhatsAppNumbersPage() {
                   setNumber('');
                   setDisplayName('');
                 }}
+                className="w-full sm:w-auto"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Number
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-md">
               <form onSubmit={handleSubmit}>
                 <DialogHeader>
                   <DialogTitle>
@@ -124,8 +125,8 @@ export default function WhatsAppNumbersPage() {
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   {!editingNumber && (
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="number" className="text-right">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                      <Label htmlFor="number" className="sm:text-right">
                         Phone Number
                       </Label>
                       <Input
@@ -133,15 +134,15 @@ export default function WhatsAppNumbersPage() {
                         value={number}
                         onChange={(e) => setNumber(e.target.value)}
                         placeholder="+1234567890"
-                        className="col-span-3"
+                        className="sm:col-span-3"
                         required
                         pattern="^\+\d{10,15}$"
                         title="Enter phone number with country code (e.g., +1234567890)"
                       />
                     </div>
                   )}
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="displayName" className="text-right">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                    <Label htmlFor="displayName" className="sm:text-right">
                       Display Name
                     </Label>
                     <Input
@@ -149,7 +150,7 @@ export default function WhatsAppNumbersPage() {
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       placeholder="Business Name"
-                      className="col-span-3"
+                      className="sm:col-span-3"
                       required
                     />
                   </div>
@@ -173,7 +174,7 @@ export default function WhatsAppNumbersPage() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {numbers?.length === 0 ? (
               <div className="col-span-full">
                 <Card className="text-center py-12">
@@ -191,13 +192,13 @@ export default function WhatsAppNumbersPage() {
                 <Card key={numberData.id}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 min-w-0 flex-1">
                         {getStatusIcon(numberData.status)}
                         <Badge className={getStatusColor(numberData.status)}>
-                          {numberData.status}
+                          <span className="hidden sm:inline">{numberData.status}</span>
                         </Badge>
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-2 flex-shrink-0">
                         <Button
                           variant="ghost"
                           size="icon"
@@ -220,11 +221,11 @@ export default function WhatsAppNumbersPage() {
                     <div className="space-y-2">
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Phone Number</p>
-                        <p className="font-mono text-sm">{numberData.number}</p>
+                        <p className="font-mono text-sm break-all">{numberData.number}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Display Name</p>
-                        <p className="text-sm">{numberData.displayName}</p>
+                        <p className="text-sm truncate">{numberData.displayName}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Added</p>

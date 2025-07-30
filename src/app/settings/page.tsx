@@ -137,40 +137,40 @@ export default function SettingsPage() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Settings</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               Manage your account settings and preferences.
             </p>
           </div>
-          <Button variant="outline" onClick={exportData}>
+          <Button variant="outline" onClick={exportData} className="w-full sm:w-auto">
             <Download className="mr-2 h-4 w-4" />
             Export Settings
           </Button>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="profile" className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Profile
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+            <TabsTrigger value="profile" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <User className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Profile</span>
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
-              <Bell className="h-4 w-4" />
-              Notifications
+            <TabsTrigger value="notifications" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Notifications</span>
             </TabsTrigger>
-            <TabsTrigger value="whatsapp" className="flex items-center gap-2">
-              <Zap className="h-4 w-4" />
-              WhatsApp
+            <TabsTrigger value="whatsapp" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">WhatsApp</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              Security
+            <TabsTrigger value="security" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Security</span>
             </TabsTrigger>
-            <TabsTrigger value="data" className="flex items-center gap-2">
-              <Database className="h-4 w-4" />
-              Data
+            <TabsTrigger value="data" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Database className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Data</span>
             </TabsTrigger>
           </TabsList>
 
@@ -184,7 +184,7 @@ export default function SettingsPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
                     <Input
@@ -244,7 +244,7 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Email Notifications</Label>
                       <p className="text-sm text-muted-foreground">Receive notifications via email</p>
                     </div>
@@ -255,7 +255,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Push Notifications</Label>
                       <p className="text-sm text-muted-foreground">Receive browser push notifications</p>
                     </div>
@@ -266,7 +266,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>New Messages</Label>
                       <p className="text-sm text-muted-foreground">Get notified when you receive new messages</p>
                     </div>
@@ -277,7 +277,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Workflow Updates</Label>
                       <p className="text-sm text-muted-foreground">Notifications about workflow executions and errors</p>
                     </div>
@@ -288,7 +288,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Weekly Reports</Label>
                       <p className="text-sm text-muted-foreground">Receive weekly analytics reports</p>
                     </div>
@@ -299,7 +299,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Security Alerts</Label>
                       <p className="text-sm text-muted-foreground">Important security notifications</p>
                     </div>
@@ -326,7 +326,7 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Auto Reply</Label>
                       <p className="text-sm text-muted-foreground">Automatically respond to incoming messages</p>
                     </div>
@@ -337,7 +337,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Business Hours</Label>
                       <p className="text-sm text-muted-foreground">Only auto-respond during business hours</p>
                     </div>
@@ -348,7 +348,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Read Receipts</Label>
                       <p className="text-sm text-muted-foreground">Send read receipts when messages are viewed</p>
                     </div>
@@ -359,7 +359,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0 flex-1">
                       <Label>Typing Indicator</Label>
                       <p className="text-sm text-muted-foreground">Show typing indicator when composing responses</p>
                     </div>
@@ -397,11 +397,11 @@ export default function SettingsPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                   <p className="text-sm text-muted-foreground">
                     API keys allow external applications to access your account
                   </p>
-                  <Button onClick={generateApiKey}>
+                  <Button onClick={generateApiKey} className="w-full sm:w-auto">
                     <Key className="mr-2 h-4 w-4" />
                     Generate New Key
                   </Button>
@@ -409,11 +409,11 @@ export default function SettingsPage() {
 
                 <div className="space-y-3">
                   {apiKeys.map((apiKey) => (
-                    <div key={apiKey.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="space-y-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium">{apiKey.name}</span>
-                          <Badge variant="outline" className="text-xs">
+                    <div key={apiKey.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 border rounded-lg gap-3">
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                          <span className="font-medium truncate">{apiKey.name}</span>
+                          <Badge variant="outline" className="text-xs w-fit">
                             {apiKey.key}
                           </Badge>
                         </div>
@@ -425,6 +425,7 @@ export default function SettingsPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => deleteApiKey(apiKey.id)}
+                        className="flex-shrink-0"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -451,7 +452,7 @@ export default function SettingsPage() {
                     <p className="text-sm text-muted-foreground mt-1">
                       Download all your conversations, contacts, and workflows
                     </p>
-                    <Button variant="outline" className="mt-3">
+                    <Button variant="outline" className="mt-3 w-full sm:w-auto">
                       <Download className="mr-2 h-4 w-4" />
                       Export All Data
                     </Button>
@@ -462,7 +463,7 @@ export default function SettingsPage() {
                     <p className="text-sm text-muted-foreground mt-1">
                       Import contacts and workflows from a CSV or JSON file
                     </p>
-                    <Button variant="outline" className="mt-3">
+                    <Button variant="outline" className="mt-3 w-full sm:w-auto">
                       <Upload className="mr-2 h-4 w-4" />
                       Import Data
                     </Button>
@@ -473,7 +474,7 @@ export default function SettingsPage() {
                     <p className="text-sm text-red-700 mt-1">
                       Permanently delete your account and all associated data. This action cannot be undone.
                     </p>
-                    <Button variant="destructive" className="mt-3">
+                    <Button variant="destructive" className="mt-3 w-full sm:w-auto">
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete Account
                     </Button>

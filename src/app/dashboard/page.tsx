@@ -58,14 +58,14 @@ export default function DashboardPage() {
       <div className="space-y-6">
         {/* Welcome Header */}
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Welcome to your WhatsApp Business CRM. Here's an overview of your account.
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {statCards.map((stat) => {
             const Icon = stat.icon;
             return (
@@ -76,7 +76,7 @@ export default function DashboardPage() {
                     <Icon className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stat.value}</div>
+                    <div className="text-xl sm:text-2xl font-bold">{stat.value}</div>
                     <p className="text-xs text-muted-foreground">{stat.description}</p>
                   </CardContent>
                 </Card>
@@ -85,7 +85,7 @@ export default function DashboardPage() {
           })}
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
           {/* Quick Actions */}
           <Card>
             <CardHeader>
@@ -129,20 +129,20 @@ export default function DashboardPage() {
                 <div className="space-y-3">
                   {numbers.slice(0, 3).map((number) => (
                     <div key={number.id} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Phone className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-mono">{number.number}</span>
+                      <div className="flex items-center space-x-2 min-w-0 flex-1">
+                        <Phone className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-sm font-mono truncate">{number.number}</span>
                       </div>
                       <Badge 
                         variant={number.status === 'approved' ? 'default' : 'secondary'}
-                        className={number.status === 'approved' ? 'bg-green-100 text-green-800' : ''}
+                        className={`${number.status === 'approved' ? 'bg-green-100 text-green-800' : ''} flex-shrink-0`}
                       >
                         {number.status === 'approved' ? (
                           <CheckCircle className="mr-1 h-3 w-3" />
                         ) : (
                           <Clock className="mr-1 h-3 w-3" />
                         )}
-                        {number.status}
+                        <span className="hidden sm:inline">{number.status}</span>
                       </Badge>
                     </div>
                   ))}
@@ -172,7 +172,7 @@ export default function DashboardPage() {
           </Card>
 
           {/* Recent Activity */}
-          <Card>
+          <Card className="lg:col-span-2 xl:col-span-1">
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
               <CardDescription>Latest updates and actions</CardDescription>
@@ -180,16 +180,16 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <div className="text-sm">
+                  <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
+                  <div className="text-sm min-w-0 flex-1">
                     <p className="font-medium">System initialized</p>
                     <p className="text-muted-foreground text-xs">Welcome to Layanify CRM</p>
                   </div>
                 </div>
                 {numbers && numbers.length > 0 && (
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    <div className="text-sm">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
+                    <div className="text-sm min-w-0 flex-1">
                       <p className="font-medium">WhatsApp numbers configured</p>
                       <p className="text-muted-foreground text-xs">
                         {numbers.length} number{numbers.length > 1 ? 's' : ''} added
