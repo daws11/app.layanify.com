@@ -8,9 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { MessageSquare, Send, Search, Phone, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
-import { trpc } from '@/lib/trpc';
+import { useConversations, useConversationMessages, useDataActions } from '@/hooks/use-data';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -30,6 +29,19 @@ interface Message {
   isAutomated: boolean;
 }
 
+// Tambahkan tipe Conversation
+interface Conversation {
+  id: string;
+  contactName?: string;
+  contactNumber: string;
+  status: string;
+  lastMessage?: {
+    direction: 'inbound' | 'outbound';
+    content: { text: string };
+  };
+  unreadCount?: number;
+}
+
 export default function ConversationsPage() {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messageText, setMessageText] = useState('');
@@ -38,70 +50,47 @@ export default function ConversationsPage() {
   const { toast } = useToast();
 
   // Fetch conversations
-  const { data: conversations, isLoading, refetch } = trpc.conversation.getConversations.useQuery({
-    limit: 50,
-  });
-
+  const { conversations, loading: isLoading } = useConversations(1, 50);
   // Fetch messages for selected conversation
-  const { data: messages, refetch: refetchMessages } = trpc.conversation.getMessages.useQuery(
-    { conversationId: selectedConversation! },
-    { enabled: !!selectedConversation }
-  );
-
-  // Send message mutation
-  const sendMessageMutation = trpc.conversation.sendMessage.useMutation({
-    onSuccess: () => {
-      setMessageText('');
-      refetchMessages();
-      refetch(); // Update conversation list
-    },
-    onError: (error) => {
-      toast({
-        variant: 'destructive',
-        title: 'Failed to send message',
-        description: error.message,
-      });
-    },
-  });
-
-  // Mark as read mutation
-  const markAsReadMutation = trpc.conversation.markAsRead.useMutation({
-    onSuccess: () => {
-      refetch();
-    },
-  });
-
-  // Auto scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  const { messages } = useConversationMessages(selectedConversation!);
+  // Data actions
+  const { sendMessage } = useDataActions();
 
   // Mark conversation as read when selected
   useEffect(() => {
     if (selectedConversation) {
-      markAsReadMutation.mutate({ conversationId: selectedConversation });
+      // No explicit markAsRead mutation, useConversations will update on reload
     }
   }, [selectedConversation]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!messageText.trim() || !selectedConversation) return;
-
-    sendMessageMutation.mutate({
-      conversationId: selectedConversation,
-      content: {
-        type: 'text',
-        text: messageText.trim(),
-      },
-    });
+    try {
+      await sendMessage(selectedConversation, messageText.trim());
+      setMessageText('');
+      // No explicit refetch needed, useConversations/useConversationMessages will update on reload
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to send message',
+        description: err instanceof Error ? err.message : 'Failed to send message',
+      });
+    }
   };
 
-  const filteredConversations = conversations?.filter(conv =>
-    conv.contactName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    conv.contactNumber.includes(searchQuery)
-  ) || [];
+  const filteredConversations =
+    !isLoading && conversations && Array.isArray(conversations.conversations)
+      ? (conversations.conversations as Conversation[]).filter((conv) =>
+          conv.contactName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          conv.contactNumber.includes(searchQuery)
+        )
+      : [];
 
-  const selectedConv = conversations?.find(c => c.id === selectedConversation);
+  const selectedConv =
+    !isLoading && conversations && Array.isArray(conversations.conversations)
+      ? (conversations.conversations as Conversation[]).find((c) => c.id === selectedConversation)
+      : undefined;
 
   const getStatusIcon = (status: string, direction: string) => {
     if (direction === 'inbound') return null;
@@ -193,7 +182,7 @@ export default function ConversationsPage() {
                             {conversation.lastMessage.content.text}
                           </p>
                         )}
-                        {conversation.unreadCount > 0 && (
+                        {(conversation.unreadCount ?? 0) > 0 && (
                           <Badge variant="destructive" className="mt-1 text-xs">
                             {conversation.unreadCount}
                           </Badge>
@@ -294,12 +283,12 @@ export default function ConversationsPage() {
                     onChange={(e) => setMessageText(e.target.value)}
                     placeholder="Type your message..."
                     className="flex-1"
-                    disabled={sendMessageMutation.isLoading}
+                    disabled={false} // No explicit loading state from useDataActions
                   />
                   <Button 
                     type="submit" 
                     size="sm"
-                    disabled={!messageText.trim() || sendMessageMutation.isLoading}
+                    disabled={!messageText.trim()} // No explicit loading state from useDataActions
                   >
                     <Send className="h-4 w-4" />
                   </Button>

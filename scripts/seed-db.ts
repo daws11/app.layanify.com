@@ -1,4 +1,4 @@
-import connectToDatabase from '../src/lib/mongodb';
+import connectToDatabase from '../src/lib/mongodb.js';
 import { User, WhatsAppNumber, Conversation, Message, Workflow, AuditLog } from '../src/lib/models';
 import bcrypt from 'bcryptjs';
 import { Types } from 'mongoose';

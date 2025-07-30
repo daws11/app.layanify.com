@@ -42,9 +42,9 @@ export function Sidebar() {
         {/* Logo and Toggle */}
         <div className="flex h-16 items-center justify-between px-4 border-b">
           <div className={cn('flex items-center', sidebarOpen ? 'gap-2' : 'justify-center')}>
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            {/* <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <MessageSquare className="w-5 h-5 text-primary-foreground" />
-            </div>
+            </div> */}
             {sidebarOpen && (
               <span className="text-lg font-semibold">Layanify</span>
             )}

@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -21,55 +21,30 @@ import {
   Mail,
   Calendar,
   Tag,
-  MoreHorizontal,
   Edit2,
   Trash2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useContacts } from '@/hooks/use-data';
 
-// Mock data - in real app this would come from tRPC
-const mockContacts = [
-  {
-    id: '1',
-    name: 'John Doe',
-    phone: '+628123456789',
-    email: 'john@example.com',
-    tags: ['customer', 'vip'],
-    lastContact: new Date('2024-01-15'),
-    status: 'active',
-    notes: 'Important client from Jakarta',
-    source: 'whatsapp'
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    phone: '+628987654321',
-    email: 'jane@example.com',
-    tags: ['prospect'],
-    lastContact: new Date('2024-01-14'),
-    status: 'active',
-    notes: 'Interested in our services',
-    source: 'manual'
-  },
-  {
-    id: '3',
-    name: null,
-    phone: '+628555444333',
-    email: null,
-    tags: ['lead'],
-    lastContact: new Date('2024-01-13'),
-    status: 'opted-out',
-    notes: '',
-    source: 'whatsapp'
-  }
-];
+// Tambahkan tipe Contact
+interface Contact {
+  id: string;
+  name?: string;
+  phone: string;
+  email?: string;
+  tags: string[];
+  lastContact: Date;
+  status: string;
+  notes: string;
+  source?: string;
+}
 
 export default function ContactsPage() {
-  const [contacts] = useState(mockContacts);
+  const { contacts } = useContacts();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedContact, setSelectedContact] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
 
@@ -93,9 +68,8 @@ export default function ContactsPage() {
     return matchesSearch && matchesFilter;
   });
 
-  const handleOpenDialog = (contact?: any) => {
+  const handleOpenDialog = (contact?: Contact) => {
     if (contact) {
-      setSelectedContact(contact);
       setFormData({
         name: contact.name || '',
         phone: contact.phone,
@@ -105,7 +79,6 @@ export default function ContactsPage() {
       });
       setIsEditing(true);
     } else {
-      setSelectedContact(null);
       setFormData({
         name: '',
         phone: '',
@@ -311,7 +284,7 @@ export default function ContactsPage() {
                         {contact.tags.length > 0 && (
                           <div className="flex items-center space-x-1 mt-2">
                             <Tag className="h-3 w-3 text-muted-foreground" />
-                            {contact.tags.map((tag) => (
+                            {contact.tags.map((tag: string) => (
                               <Badge key={tag} variant="outline" className="text-xs">
                                 {tag}
                               </Badge>

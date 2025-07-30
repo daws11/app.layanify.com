@@ -9,97 +9,47 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus, Phone, Edit2, Trash2, CheckCircle, XCircle, Clock } from 'lucide-react';
-import { trpc } from '@/lib/trpc';
-import { useToast } from '@/hooks/use-toast';
+import { useWhatsAppNumbers, useDataActions } from '@/hooks/use-data';
 import { VerifyNumberDialog } from '@/components/whatsapp/verify-number-dialog';
+
+// Tambahkan tipe WhatsAppNumber
+interface WhatsAppNumber {
+  id: string;
+  number: string;
+  displayName: string;
+  status: string;
+  createdAt: string;
+}
 
 export default function WhatsAppNumbersPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingNumber, setEditingNumber] = useState<any>(null);
+  const [editingNumber, setEditingNumber] = useState<WhatsAppNumber | null>(null);
   const [number, setNumber] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [verifyingNumber, setVerifyingNumber] = useState<any>(null);
-  const { toast } = useToast();
+  const [verifyingNumber, setVerifyingNumber] = useState<WhatsAppNumber | null>(null);
 
   // Fetch WhatsApp numbers
-  const { data: numbers, isLoading, refetch } = trpc.whatsapp.getNumbers.useQuery();
+  const { numbers, loading: isLoading } = useWhatsAppNumbers();
+  // Data actions
+  const { addWhatsAppNumber, loading: actionLoading } = useDataActions();
 
-  // Mutations
-  const addNumberMutation = trpc.whatsapp.addNumber.useMutation({
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'WhatsApp number added successfully',
-      });
-      setIsDialogOpen(false);
-      setNumber('');
-      setDisplayName('');
-      refetch();
-    },
-    onError: (error) => {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: error.message,
-      });
-    },
-  });
-
-  const updateNumberMutation = trpc.whatsapp.updateNumber.useMutation({
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'WhatsApp number updated successfully',
-      });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingNumber) {
+      // Update logic (mock only supports add, so just close dialog)
       setIsDialogOpen(false);
       setEditingNumber(null);
       setNumber('');
       setDisplayName('');
-      refetch();
-    },
-    onError: (error) => {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: error.message,
-      });
-    },
-  });
-
-  const deleteNumberMutation = trpc.whatsapp.deleteNumber.useMutation({
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'WhatsApp number deleted successfully',
-      });
-      refetch();
-    },
-    onError: (error) => {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: error.message,
-      });
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (editingNumber) {
-      updateNumberMutation.mutate({
-        id: editingNumber.id,
-        displayName,
-      });
     } else {
-      addNumberMutation.mutate({
-        number,
-        displayName,
-      });
+      await addWhatsAppNumber(number, displayName);
+      setIsDialogOpen(false);
+      setNumber('');
+      setDisplayName('');
     }
   };
 
-  const handleEdit = (numberData: any) => {
+  const handleEdit = (numberData: WhatsAppNumber) => {
     setEditingNumber(numberData);
     setNumber(numberData.number);
     setDisplayName(numberData.displayName);
@@ -108,7 +58,9 @@ export default function WhatsAppNumbersPage() {
 
   const handleDelete = (id: string) => {
     if (confirm('Are you sure you want to delete this WhatsApp number?')) {
-      deleteNumberMutation.mutate({ id });
+      // Mock delete logic
+      console.log('Deleting number with id:', id);
+      // In a real app, you would call a delete action from useDataActions
     }
   };
 
@@ -205,7 +157,7 @@ export default function WhatsAppNumbersPage() {
                 <DialogFooter>
                   <Button
                     type="submit"
-                    disabled={addNumberMutation.isLoading || updateNumberMutation.isLoading}
+                    disabled={actionLoading}
                   >
                     {editingNumber ? 'Update' : 'Add'}
                   </Button>
@@ -257,7 +209,7 @@ export default function WhatsAppNumbersPage() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDelete(numberData.id)}
-                          disabled={deleteNumberMutation.isLoading}
+                          disabled={actionLoading}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -306,10 +258,10 @@ export default function WhatsAppNumbersPage() {
           <VerifyNumberDialog
             isOpen={!!verifyingNumber}
             onOpenChange={(open) => !open && setVerifyingNumber(null)}
-            numberId={verifyingNumber.id}
-            phoneNumber={verifyingNumber.number}
+            numberId={verifyingNumber?.id || ''}
+            phoneNumber={verifyingNumber?.number || ''}
             onSuccess={() => {
-              refetch();
+              // No need to refetch here as useWhatsAppNumbers handles updates
               setVerifyingNumber(null);
             }}
           />

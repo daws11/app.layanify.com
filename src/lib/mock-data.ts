@@ -343,8 +343,11 @@ export const generateMockData = () => {
 export const getMockDataByUserId = (userId: string) => {
   const data = generateMockData();
   
-  // For demo user or if no specific user found, return first user's data for demonstration
-  const targetUserId = userId === 'demo-user' ? '507f1f77bcf86cd799439011' : userId;
+  // Check if the user exists in mock data, if not fallback to demo user
+  const userFound = data.users.find(u => u._id?.toString() === userId);
+  
+  // Use demo user ID as fallback for any user not found in mock data
+  const targetUserId = (userId === 'demo-user' || !userFound) ? '507f1f77bcf86cd799439011' : userId;
   
   return {
     user: data.users.find(u => u._id?.toString() === targetUserId) || data.users[0],

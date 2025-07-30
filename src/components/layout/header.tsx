@@ -15,10 +15,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useAppStore } from '@/store';
+import { Switch } from '@/components/ui/switch';
+import { Sun, Moon } from 'lucide-react';
 
 export function Header() {
   const { data: session } = useSession();
-  const { notifications } = useAppStore();
+  const { notifications, theme, setTheme } = useAppStore();
 
   const unreadNotifications = notifications.filter(n => n.type === 'info').length;
 
@@ -77,6 +79,17 @@ export function Header() {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Theme Toggle */}
+        <div className="flex items-center gap-2">
+          <Sun className={`h-4 w-4 ${theme === 'light' ? 'text-yellow-500' : 'text-muted-foreground'}`} />
+          <Switch
+            aria-label="Toggle theme"
+            checked={theme === 'dark'}
+            onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+          />
+          <Moon className={`h-4 w-4 ${theme === 'dark' ? 'text-blue-400' : 'text-muted-foreground'}`} />
+        </div>
 
         {/* User Menu */}
         <DropdownMenu>

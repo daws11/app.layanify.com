@@ -54,7 +54,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <DemoModeBanner />
+      {/* <DemoModeBanner /> */}
       <div className="space-y-6">
         {/* Welcome Header */}
         <div>
