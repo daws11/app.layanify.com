@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure, auditedProcedure } from '@/server/trpc';
-import { WhatsAppNumber } from '@/lib/models';
+import { WhatsAppNumber, User } from '@/lib/models';
 import { TRPCError } from '@trpc/server';
+import { WhatsAppBusinessAPI } from '@/lib/whatsapp-api';
+import { decryptUserSensitiveFields } from '@/lib/encryption';
 
 export const whatsappRouter = createTRPCRouter({
   getNumbers: protectedProcedure
@@ -180,5 +182,128 @@ export const whatsappRouter = createTRPCRouter({
         websites: [],
         vertical: 'OTHER',
       };
+    }),
+
+  testConnection: protectedProcedure
+    .input(z.object({
+      accessToken: z.string(),
+      phoneNumberId: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const whatsappAPI = new WhatsAppBusinessAPI(
+          input.accessToken,
+          input.phoneNumberId
+        );
+
+        const result = await whatsappAPI.testConnection();
+
+        if (result.isConnected && result.profile) {
+          return {
+            isConnected: true,
+            phoneNumbers: [{
+              id: result.profile.phone_number_id,
+              number: result.profile.display_phone_number,
+              displayName: result.profile.about || 'WhatsApp Business',
+              status: 'approved' as const,
+            }],
+          };
+        }
+
+        return {
+          isConnected: false,
+          phoneNumbers: [],
+          error: result.error,
+        };
+      } catch (error) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: error instanceof Error ? error.message : 'Failed to test connection',
+        });
+      }
+    }),
+
+  sendCredentialsToN8n: protectedProcedure
+    .mutation(async ({ ctx }) => {
+      try {
+        // Get user with WhatsApp credentials
+        const user = await User.findById(ctx.user._id).lean();
+        if (!user) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'User not found',
+          });
+        }
+
+        // Decrypt user's sensitive fields
+        const decryptedUser = decryptUserSensitiveFields(user);
+
+        // Check if user has WhatsApp credentials
+        if (!decryptedUser.whatsappClientId || 
+            !decryptedUser.whatsappClientSecret || 
+            !decryptedUser.whatsappAccessToken || 
+            !decryptedUser.whatsappBusinessAccountId || 
+            !decryptedUser.whatsappPhoneNumberId) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'WhatsApp credentials not configured',
+          });
+        }
+
+        // Prepare payload for n8n
+        const n8nPayload = {
+          userId: user._id.toString(),
+          userEmail: user.email,
+          timestamp: new Date().toISOString(),
+          whatsappCredentials: {
+            clientId: decryptedUser.whatsappClientId,
+            clientSecret: decryptedUser.whatsappClientSecret,
+            accessToken: decryptedUser.whatsappAccessToken,
+            businessAccountId: decryptedUser.whatsappBusinessAccountId,
+            phoneNumberId: decryptedUser.whatsappPhoneNumberId,
+          },
+          // Additional metadata for n8n workflow
+          metadata: {
+            source: 'layanify-crm',
+            version: '1.0.0',
+            action: 'whatsapp_credentials_update',
+          }
+        };
+
+        // Send credentials to n8n
+        const response = await fetch('https://primary-production-9778.up.railway.app/webhook-test/2c73b5be-5924-44a4-942c-55c2d1836d77', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(n8nPayload),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to send credentials to n8n:', response.status, response.statusText);
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Failed to send credentials to n8n',
+          });
+        }
+
+        const n8nResponse = await response.json();
+
+        return {
+          success: true,
+          message: 'WhatsApp credentials sent to n8n successfully',
+          n8nResponse,
+        };
+
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        console.error('Error sending credentials to n8n:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to send credentials to n8n',
+        });
+      }
     }),
 });

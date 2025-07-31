@@ -55,6 +55,13 @@ export const authRouter = createTRPCRouter({
         tier: ctx.user.tier,
         hasMetaToken: !!ctx.user.metaAccessToken,
         hasN8nKey: !!ctx.user.n8nApiKey,
+        hasWhatsAppCredentials: !!(
+          ctx.user.whatsappClientId ||
+          ctx.user.whatsappClientSecret ||
+          ctx.user.whatsappAccessToken ||
+          ctx.user.whatsappBusinessAccountId ||
+          ctx.user.whatsappPhoneNumberId
+        ),
       };
     }),
 
@@ -63,6 +70,12 @@ export const authRouter = createTRPCRouter({
       name: z.string().min(2).optional(),
       metaAccessToken: z.string().optional(),
       n8nApiKey: z.string().optional(),
+      // WhatsApp Business API credentials
+      whatsappClientId: z.string().optional(),
+      whatsappClientSecret: z.string().optional(),
+      whatsappAccessToken: z.string().optional(),
+      whatsappBusinessAccountId: z.string().optional(),
+      whatsappPhoneNumberId: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       const updateData: any = {};
@@ -80,6 +93,32 @@ export const authRouter = createTRPCRouter({
       if (input.n8nApiKey) {
         const encrypted = encryptUserSensitiveFields({ n8nApiKey: input.n8nApiKey });
         updateData.n8nApiKey = encrypted.n8nApiKey;
+      }
+
+      // Encrypt WhatsApp credentials if provided
+      if (input.whatsappClientId) {
+        const encrypted = encryptUserSensitiveFields({ whatsappClientId: input.whatsappClientId });
+        updateData.whatsappClientId = encrypted.whatsappClientId;
+      }
+
+      if (input.whatsappClientSecret) {
+        const encrypted = encryptUserSensitiveFields({ whatsappClientSecret: input.whatsappClientSecret });
+        updateData.whatsappClientSecret = encrypted.whatsappClientSecret;
+      }
+
+      if (input.whatsappAccessToken) {
+        const encrypted = encryptUserSensitiveFields({ whatsappAccessToken: input.whatsappAccessToken });
+        updateData.whatsappAccessToken = encrypted.whatsappAccessToken;
+      }
+
+      if (input.whatsappBusinessAccountId) {
+        const encrypted = encryptUserSensitiveFields({ whatsappBusinessAccountId: input.whatsappBusinessAccountId });
+        updateData.whatsappBusinessAccountId = encrypted.whatsappBusinessAccountId;
+      }
+
+      if (input.whatsappPhoneNumberId) {
+        const encrypted = encryptUserSensitiveFields({ whatsappPhoneNumberId: input.whatsappPhoneNumberId });
+        updateData.whatsappPhoneNumberId = encrypted.whatsappPhoneNumberId;
       }
 
       const updatedUser = await User.findByIdAndUpdate(

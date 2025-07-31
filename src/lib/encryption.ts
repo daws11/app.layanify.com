@@ -79,6 +79,27 @@ export function encryptUserSensitiveFields(user: any) {
     encryptedUser.n8nApiKey = encryptField(encryptedUser.n8nApiKey);
   }
   
+  // Encrypt WhatsApp Business API credentials
+  if (encryptedUser.whatsappClientId) {
+    encryptedUser.whatsappClientId = encryptField(encryptedUser.whatsappClientId);
+  }
+  
+  if (encryptedUser.whatsappClientSecret) {
+    encryptedUser.whatsappClientSecret = encryptField(encryptedUser.whatsappClientSecret);
+  }
+  
+  if (encryptedUser.whatsappAccessToken) {
+    encryptedUser.whatsappAccessToken = encryptField(encryptedUser.whatsappAccessToken);
+  }
+  
+  if (encryptedUser.whatsappBusinessAccountId) {
+    encryptedUser.whatsappBusinessAccountId = encryptField(encryptedUser.whatsappBusinessAccountId);
+  }
+  
+  if (encryptedUser.whatsappPhoneNumberId) {
+    encryptedUser.whatsappPhoneNumberId = encryptField(encryptedUser.whatsappPhoneNumberId);
+  }
+  
   return encryptedUser;
 }
 
@@ -105,6 +126,52 @@ export function decryptUserSensitiveFields(user: any) {
     } catch (error) {
       console.error('Failed to decrypt n8nApiKey for user:', user._id);
       decryptedUser.n8nApiKey = null;
+    }
+  }
+  
+  // Decrypt WhatsApp Business API credentials
+  if (decryptedUser.whatsappClientId) {
+    try {
+      decryptedUser.whatsappClientId = decryptField(decryptedUser.whatsappClientId);
+    } catch (error) {
+      console.error('Failed to decrypt whatsappClientId for user:', user._id);
+      decryptedUser.whatsappClientId = null;
+    }
+  }
+  
+  if (decryptedUser.whatsappClientSecret) {
+    try {
+      decryptedUser.whatsappClientSecret = decryptField(decryptedUser.whatsappClientSecret);
+    } catch (error) {
+      console.error('Failed to decrypt whatsappClientSecret for user:', user._id);
+      decryptedUser.whatsappClientSecret = null;
+    }
+  }
+  
+  if (decryptedUser.whatsappAccessToken) {
+    try {
+      decryptedUser.whatsappAccessToken = decryptField(decryptedUser.whatsappAccessToken);
+    } catch (error) {
+      console.error('Failed to decrypt whatsappAccessToken for user:', user._id);
+      decryptedUser.whatsappAccessToken = null;
+    }
+  }
+  
+  if (decryptedUser.whatsappBusinessAccountId) {
+    try {
+      decryptedUser.whatsappBusinessAccountId = decryptField(decryptedUser.whatsappBusinessAccountId);
+    } catch (error) {
+      console.error('Failed to decrypt whatsappBusinessAccountId for user:', user._id);
+      decryptedUser.whatsappBusinessAccountId = null;
+    }
+  }
+  
+  if (decryptedUser.whatsappPhoneNumberId) {
+    try {
+      decryptedUser.whatsappPhoneNumberId = decryptField(decryptedUser.whatsappPhoneNumberId);
+    } catch (error) {
+      console.error('Failed to decrypt whatsappPhoneNumberId for user:', user._id);
+      decryptedUser.whatsappPhoneNumberId = null;
     }
   }
   

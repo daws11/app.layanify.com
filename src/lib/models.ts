@@ -6,6 +6,12 @@ export interface IUser extends Document {
   password?: string;
   metaAccessToken?: string;
   n8nApiKey?: string;
+  // WhatsApp Business API Credentials (encrypted)
+  whatsappClientId?: string;
+  whatsappClientSecret?: string;
+  whatsappAccessToken?: string;
+  whatsappBusinessAccountId?: string;
+  whatsappPhoneNumberId?: string;
   tier: 'basic' | 'pro' | 'enterprise';
   createdAt: Date;
   updatedAt: Date;
@@ -78,6 +84,12 @@ const UserSchema = new Schema<IUser>({
   password: { type: String }, // Optional for OAuth users
   metaAccessToken: { type: String }, // Will be encrypted
   n8nApiKey: { type: String }, // Will be encrypted
+  // WhatsApp Business API Credentials (will be encrypted)
+  whatsappClientId: { type: String },
+  whatsappClientSecret: { type: String },
+  whatsappAccessToken: { type: String },
+  whatsappBusinessAccountId: { type: String },
+  whatsappPhoneNumberId: { type: String },
   tier: { type: String, enum: ['basic', 'pro', 'enterprise'], default: 'basic' },
 }, { timestamps: true });
 

@@ -24,18 +24,36 @@ const seedDatabase = async () => {
         email: 'john.doe@example.com',
         password: await bcrypt.hash('password123', 12),
         tier: 'pro',
+        // Example WhatsApp credentials (these would be encrypted in real usage)
+        whatsappClientId: 'example_client_id_1',
+        whatsappClientSecret: 'example_client_secret_1',
+        whatsappAccessToken: 'example_access_token_1',
+        whatsappBusinessAccountId: 'example_business_account_id_1',
+        whatsappPhoneNumberId: 'example_phone_number_id_1',
       },
       {
         name: 'Jane Smith',
         email: 'jane.smith@example.com',
         password: await bcrypt.hash('password123', 12),
         tier: 'enterprise',
+        // Example WhatsApp credentials (these would be encrypted in real usage)
+        whatsappClientId: 'example_client_id_2',
+        whatsappClientSecret: 'example_client_secret_2',
+        whatsappAccessToken: 'example_access_token_2',
+        whatsappBusinessAccountId: 'example_business_account_id_2',
+        whatsappPhoneNumberId: 'example_phone_number_id_2',
       },
       {
         name: 'Mike Johnson',
         email: 'mike.johnson@example.com',
         password: await bcrypt.hash('password123', 12),
         tier: 'basic',
+        // Example WhatsApp credentials (these would be encrypted in real usage)
+        whatsappClientId: 'example_client_id_3',
+        whatsappClientSecret: 'example_client_secret_3',
+        whatsappAccessToken: 'example_access_token_3',
+        whatsappBusinessAccountId: 'example_business_account_id_3',
+        whatsappPhoneNumberId: 'example_phone_number_id_3',
       }
     ]);
     console.log(`Created ${users.length} users`);
